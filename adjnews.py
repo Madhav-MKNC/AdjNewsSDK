@@ -3,6 +3,9 @@
 import requests
 from requests import Session
 from typing import Optional, Dict, Any
+import os 
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class AdjNewsError(Exception):
@@ -13,7 +16,12 @@ class AdjNewsError(Exception):
 class AdjNews:
     BASE_URL = "https://api.data.adj.news"
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str = None):
+        if not api_key:
+            api_key = os.getenv("ADJ_NEWS_API_KEY", None)
+            if not api_key:
+                raise AdjNewsError(f"ADJ_NEWS_API_KEY Not Found.")
+
         self.api_key = api_key
         self.session = self._init_session()
 
